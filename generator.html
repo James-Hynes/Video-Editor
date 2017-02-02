@@ -10,7 +10,7 @@
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script src='jquery-ui.min.js'></script>
 	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-	<style>body,html{padding:none;margin:none}iframe{position:relative;margin:auto;top:25%;left:50%;transform:translate(-50%,0%)}#video-editor{position:relative;padding-top:20px;text-align:center;display:inline-block}#video-info{text-align:center;display:table;width:100%}input[type="text"]{display:inline-block;width:25%;margin:0;font-family:sans-serif;font-size:18px;appearance:none;box-shadow:none;border-radius:none;padding:10px;border:solid 1px #dcdcdc;transition:box-shadow 0.3s,border 0.3s}input[type="text"]:focus,input[type="text"].focus{outline:none;border:solid 1px #229cb7;box-shadow:0 0 5px 1px #229cb7}.main-text{font-family:Tahoma,Geneva,sans-serif;font-size:22px;padding-right:10px}.ui-slider-track{margin:0 auto;width:840px}.ui-rangeslider{width:980px}#share{margin-top:5px}div.ui-input-text{width:50px!important;height:30px!important;display:inline-block}#time-div{text-align:center!important;display:inline-block}</style>
+	<style>body,html{padding:none;margin:none}iframe{position:relative;margin:auto;top:25%;left:50%;transform:translate(-50%,0%)}#video-editor{position:relative;padding-top:20px;text-align:center;display:inline-block}#video-info{text-align:center;display:table;width:100%}input[type="text"]{display:inline-block;width:25%;margin:0;font-family:sans-serif;font-size:18px;appearance:none;box-shadow:none;border-radius:none;padding:10px;border:solid 1px #dcdcdc;transition:box-shadow 0.3s,border 0.3s}input[type="text"]:focus,input[type="text"].focus{outline:none;border:solid 1px #229cb7;box-shadow:0 0 5px 1px #229cb7}.main-text{font-family:Tahoma,Geneva,sans-serif;font-size:22px;padding-right:10px}.ui-slider-track{margin:0 auto;width:840px}.ui-rangeslider{width:980px}#share{margin-top:5px}div.ui-input-text{width:50px!important;height:30px!important;display:inline-block}#time-div{text-align:center!important;display:inline-block}.copied-alert {border-radius: 5px;background-color: #517cc1;display: none;position: absolute;right: 42.25%;top: 2%;z-index: 99;width: 225px;line-height: 50px;height: 50px;}.alert-text {color: white;font-size: 18px;}</style>
 </head>
 
 <body>
@@ -22,6 +22,7 @@
 		<span class='main-text' data-role='none'> and press enter</span>
 	</div>
 	<div id='video-editor' style='display: none'>
+		<div class='copied-alert'><span class='alert-text'>Copied link to clipboard!</span></div>
 		<div data-role="controlgroup" data-type="horizontal" style="text-align:center;">
 			<div data-role="rangeslider" id='slider'>
 				<input type="range" name="time-min" id="time-min" value="0" min="0" max="100" onchange='setStartEndTimes()'>
@@ -157,6 +158,7 @@
 			currentSettings['vol'] = ((player.isMuted()) ? 0 : Math.floor(player.getVolume()));
 			currentSettings['start'] = parseInt(document.getElementById('time-min').value);
 			currentSettings['end'] = parseInt(document.getElementById('time-max').value);
+			$( ".copied-alert" ).fadeIn(700).delay( 600 ).fadeOut( 750 );
 			document.execCommand('copy');
 		}
 
