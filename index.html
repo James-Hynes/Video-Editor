@@ -11,7 +11,6 @@
 	<script src='jquery-ui.min.js'></script>
 	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 	<style>body,html{padding:none;margin:none}iframe{position:relative;margin:auto;top:25%;left:50%;transform:translate(-50%,0%)}#video-editor{position:relative;padding-top:20px;text-align:center;display:inline-block}#video-info{text-align:center;display:table;width:100%}input[type="text"]{display:inline-block;width:25%;margin:0;font-family:sans-serif;font-size:18px;appearance:none;box-shadow:none;border-radius:none;padding:10px;border:solid 1px #dcdcdc;transition:box-shadow 0.3s,border 0.3s}input[type="text"]:focus,input[type="text"].focus{outline:none;border:solid 1px #229cb7;box-shadow:0 0 5px 1px #229cb7}.main-text{font-family:Tahoma,Geneva,sans-serif;font-size:22px;padding-right:10px}.ui-slider-track{margin:0 auto;width:840px}.ui-rangeslider{width:980px}#share{margin-top:5px}div.ui-input-text{width:50px!important;height:30px!important;display:inline-block}#time-div{text-align:center!important;display:inline-block}.copied-alert {border-radius: 5px;background-color: #517cc1;display: none;position: absolute;right: 42.25%;top: 2%;z-index: 99;width: 225px;line-height: 50px;height: 50px;}.alert-text {color: white;font-size: 18px;}</style>
-	
 </head>
 
 <body>
@@ -55,7 +54,7 @@
 				document.getElementById('shape').innerHTML = 'Add Shape';
 				currentSettings['shape'] = -1;
 				$('#time-div').attr('style', 'display: none');
-				document.getElementById('video-editor').removeChild(document.getElementById('cover-shape'));
+				document.body.removeChild(document.getElementById('cover-shape'));
 			}
 			
 		}
@@ -65,14 +64,14 @@
 			var shape = document.createElement('DIV');
 			shape.setAttribute('id', 'cover-shape');
 			shape.setAttribute('style', 'position:absolute;background:grey;z-index:99;width:' + currentSettings['w'] + 'px;height:' + currentSettings['h'] + 'px;left:' + currentSettings['x'] + 'px;top:' + currentSettings['y'] + 'px;');
-			document.getElementById('video-editor').appendChild(shape);
+			document.body.appendChild(shape);
 			$( "#cover-shape" ).on( "resizestop", function( event, ui ) {
 				currentSettings['w'] = $(this).width();
 				currentSettings['h'] = $(this).height();
 			});
 			$( "#cover-shape" ).on( "dragstop", function( event, ui ) {
-				currentSettings['x'] = $(this).position()['left'];
-				currentSettings['y'] = $(this).position()['top'];
+				currentSettings['x'] = $(this).offset()['left'];
+				currentSettings['y'] = $(this).offset()['top'];
 			});
 			$('#cover-shape').resizable().draggable();
 		}
@@ -101,7 +100,7 @@
 			"w": 80,
 			"h": 80,
 			"x": 200,
-			"y": -150,
+			"y": 150,
 			"ss": 0,
 			"es": 300
 		}
@@ -132,7 +131,7 @@
 									placeShape();
 								}
 								if(Math.floor(player.getCurrentTime()) >= parseInt(currentSettings['es']) && (!!document.getElementById('cover-shape'))) {
-									document.getElementById('video-editor').removeChild(document.getElementById('cover-shape'));
+									document.body.removeChild(document.getElementById('cover-shape'));
 								}
 							}
 						}, 1000);
@@ -164,7 +163,7 @@
 		}
 
 		document.addEventListener('copy', function(e) {
-			var base_url = 'file:///C:/Users/James/Dropbox/PersonalProjectsWorkspace/VideoThing/index.html?'
+			var base_url = 'https://james-hynes.github.io/Video-Editor/viewer.html?'
 			for(var item of Object.keys(currentSettings)) {
 				base_url += item + '=' + currentSettings[item] + '&';
 			}

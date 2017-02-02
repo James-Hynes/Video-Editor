@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+	<title>Video Editor</title>
+	<script src="https://www.youtube.com/iframe_api"></script>
+	<style>body,html{padding:none;margin:none}iframe{position:relative;margin:auto;top:25%;left:50%;transform:translate(-50%,0%)}#video-editor{position:relative;padding-top:20px;text-align:center;display:inline-block}#video-info{text-align:center;display:table;width:100%}input[type="text"]{display:inline-block;width:25%;margin:0;font-family:sans-serif;font-size:18px;appearance:none;box-shadow:none;border-radius:none;padding:10px;border:solid 1px #dcdcdc;transition:box-shadow 0.3s,border 0.3s}input[type="text"]:focus,input[type="text"].focus{outline:none;border:solid 1px #229cb7;box-shadow:0 0 5px 1px #229cb7}.main-text{font-family:Tahoma,Geneva,sans-serif;font-size:22px;padding-right:10px}.ui-slider-track{margin:0 auto;width:840px}.ui-rangeslider{width:980px}#share{margin-top:5px}div.ui-input-text{width:50px!important;height:30px!important;display:inline-block}#time-div{text-align:center!important;display:inline-block}.copied-alert {border-radius: 5px;background-color: #517cc1;display: none;position: absolute;right: 42.25%;top: 2%;z-index: 99;width: 225px;line-height: 50px;height: 50px;}.alert-text {color: white;font-size: 18px;}</style>
+</head>
+
+<body>
+	<div id='player-div'></div>
+	<div id='video-editor'></div>
+	
+	<script>
+		function setShapeTimes(){currentSettings['ss'] = Math.floor(player.getCurrentTime());currentSettings['es'] = Math.floor(player.getCurrentTime()) + parseInt(document.getElementById('shape-time').value);
+		}
+
+		function placeShape() {
+			var player_positions = document.querySelector('#player-div').getBoundingClientRect();
+			var shape = document.createElement('DIV');
+			shape.setAttribute('id', 'cover-shape');
+			shape.setAttribute('style', 'position:absolute;background:grey;z-index:99;width:' + currentSettings['w'] + 'px;height:' + currentSettings['h'] + 'px;left:' + currentSettings['x'] + 'px;top:' + currentSettings['y'] + 'px;');
+			document.body.appendChild(shape);
+		}
+
+		var player;
+
+		var currentSettings = getURLParams();
+
+		function onYouTubeIframeAPIReady() {
+			player = new YT.Player('player-div', {
+				videoId: currentSettings['v'],
+				width: 840,
+				height: 472,
+				playerVars: {
+					autoplay: 1,
+					controls: 1,
+					showinfo: 1,
+					allowFullScreen: 1,
+					iv_load_policy: 3,
+					allowFullScreen: 0,
+					autohide: 1
+				},
+				events: {
+					onReady: function(e) {
+						player.seekTo(currentSettings['start'], true);
+						setInterval(() => {
+							if (Math.floor(player.getCurrentTime()) >= currentSettings['end']) {
+								player.seekTo(parseInt(currentSettings['start']), true);
+							}
+							if(currentSettings['shape'] !== -1) {
+								if(Math.floor(player.getCurrentTime()) >= parseInt(currentSettings['ss']) && !(!!document.getElementById('cover-shape'))) {
+									placeShape();
+								}
+								if(Math.floor(player.getCurrentTime()) >= parseInt(currentSettings['es']) && (!!document.getElementById('cover-shape'))) {
+									document.body.removeChild(document.getElementById('cover-shape'));
+								}
+							}
+						}, 1000);
+					}
+				}
+			});
+		}
+
+		function getURLParams() {
+     let params = {};
+     for (let param of window.location.search.replace('?', '').split('&')) {
+         params[param.split('=')[0]] = param.split('=')[1];
+     }
+     params['end'] = parseInt(params['end']);
+     params['start'] = parseInt(params['start']);
+     params['es'] = parseInt(params['es']);
+     params['ss'] = parseInt(params['ss']);
+     params['h'] = parseInt(params['h']);
+     params['w'] = parseInt(params['w']);
+     params['x'] = parseInt(params['x']);
+     params['y'] = parseInt(params['y']);
+     params['vol'] = parseInt(params['vol']);
+     params['shape'] = parseInt(params['shape']);
+     return params;
+ }
+
+	</script>
+</body>
+</html>
