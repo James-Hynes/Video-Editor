@@ -1,8 +1,12 @@
-<!DOCTYPE HTML><html><head><title>Video Editor</title> <script async src="https://www.youtube.com/iframe_api"></script> 
-<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"><link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet"> <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script> <script src='jquery-ui.min.js'></script> <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> <style>body,html{padding:none;margin:none}iframe{position:relative;margin:auto;top:25%;left:50%;transform:translate(-50%,0%)}#video-editor{position:relative;padding-top:20px;text-align:center;display:inline-block}#video-info{text-align:center;display:table;width:100%}input[type="text"]{display:inline-block;width:25%;margin:0;font-family:sans-serif;font-size:18px;appearance:none;box-shadow:none;border-radius:none;padding:10px;border:solid 1px #dcdcdc;transition:box-shadow 0.3s,border 0.3s}input[type="text"]:focus,input[type="text"].focus{outline:none;border:solid 1px #229cb7;box-shadow:0 0 5px 1px #229cb7}.main-text{font-family:Tahoma,Geneva,sans-serif;font-size:22px;padding-right:10px}.ui-slider-track{margin:0 auto;width:840px}.ui-rangeslider{width:980px}#share{margin-top:5px}div.ui-input-text{width:50px!important;height:30px!important;display:inline-block}#time-div{text-align:center!important;display:inline-block}.copied-alert{border-radius:5px;background-color:#517cc1;display:none;position:absolute;right:42.25%;top:2%;z-index:99;width:225px;line-height:50px;height:50px}.alert-text{color:white;font-size:18px}</style></head><body><div id='player-div'></div><div id='video-info'> <br> <span class='main-text' data-role='none'>Enter URL</span> <input data-role='none' id='vidurl' type='text' placeholder='https://www.youtube.com/' onkeypress="handleKeyPress(event)"/> <span class='main-text' data-role='none'> and press enter</span></div><div id='video-editor' style='display: none'><div class='copied-alert'><span class='alert-text'>Copied link to clipboard!</span></div><div data-role="controlgroup" data-type="horizontal" style="text-align:center;"><div data-role="rangeslider" id='slider'> <input type="range" name="time-min" id="time-min" value="0" min="0" max="100" onchange='setStartEndTimes()'> <input type="range" name="time-max" id="time-max" value="100" min="0" max="100" onchange='setStartEndTimes()'></div></div> <br> <br> <button id='shape' data-role='none' onclick='addShape(event); setShapeTimes();'>Add Shape</button> <button id='share' data-role='none' onclick='generateVideoURL(event)'>Get URL</button> <br><div id='time-div' style='display: none'><span>Time shape lasts: </span><input id='shape-time' maxlength=5 onchange='setShapeTimes()' value='5'/></div></div>
+<!DOCTYPE HTML><html onkeydown='removeShape(event)'><head><title>Video Editor</title> <script async src="https://www.youtube.com/iframe_api"></script> 
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"><link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet"> <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script> <script src='jquery-ui.min.js'></script> <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> <style>body,html{padding:none;margin:none}iframe{position:relative;margin:auto;top:25%;left:50%;transform:translate(-50%,0%)}#video-editor{position:relative;padding-top:20px;text-align:center;display:inline-block}#video-info{text-align:center;display:table;width:100%}input[type="text"]{display:inline-block;width:25%;margin:0;font-family:sans-serif;font-size:18px;appearance:none;box-shadow:none;border-radius:none;padding:10px;border:solid 1px #dcdcdc;transition:box-shadow 0.3s,border 0.3s}input[type="text"]:focus,input[type="text"].focus{outline:none;border:solid 1px #229cb7;box-shadow:0 0 5px 1px #229cb7}.main-text{font-family:Tahoma,Geneva,sans-serif;font-size:22px;padding-right:10px}.ui-slider-track{margin:0 auto;width:840px}.ui-rangeslider{width:980px}#share{margin-top:5px}div.ui-input-text{width:50px!important;height:30px!important;display:inline-block}#time-div{text-align:center!important;display:inline-block}.copied-alert{border-radius:5px;background-color:#517cc1;display:none;position:absolute;right:42.25%;top:2%;z-index:99;width:225px;line-height:50px;height:50px}.alert-text{color:white;font-size:18px}</style></head><body><div id='player-div'></div><div id='video-info'> <br> <span class='main-text' data-role='none'>Enter URL</span> <input data-role='none' id='vidurl' type='text' placeholder='https://www.youtube.com/' onkeypress="handleKeyPress(event)"/> <span class='main-text' data-role='none'> and press enter</span></div><div id='video-editor' style='display: none'><div class='copied-alert'><span class='alert-text'>Copied link to clipboard!</span></div><div data-role="controlgroup" data-type="horizontal" style="text-align:center;"><div data-role="rangeslider" id='slider'> <input type="range" name="time-min" id="time-min" value="0" min="0" max="100" onchange='setStartTime()'> <input type="range" name="time-max" id="time-max" value="100" min="0" max="100" onchange='setEndTime()'></div></div> <br> <br> <button id='shape' data-role='none' onclick='addShape(event); setShapeTimes();'>Add Shape</button> <button id='share' data-role='none' onclick='generateVideoURL(event)'>Get URL</button> <br><div id='time-div' style='display: none'><span>Time shape lasts: </span><input id='shape-time' maxlength=5 onchange='setShapeTimes()' value='5'/></div></div>
 	<script>
-		function handleKeyPress(e) { if(e.keyCode === 13) loadVideoEditScreen(); }
-
+		function handleKeyPress(e) { if(e.keyCode === 13) { loadVideoEditScreen(); }}
+		function removeShape(e) {console.log(e); if(e.keyCode === 8) {
+			document.getElementById('shape').innerHTML = 'Add Shape';
+				currentSettings['shape'] = -1;
+				$('#time-div').attr('style', 'display: none');
+				document.body.removeChild(document.getElementById('cover-shape'));}}
 		function setShapeTimes(){currentSettings['ss'] = Math.floor(player.getCurrentTime());currentSettings['es'] = Math.floor(player.getCurrentTime()) + parseInt(document.getElementById('shape-time').value);
 		}
 
@@ -38,7 +42,17 @@
 			$('#cover-shape').resizable().draggable();
 		}
 
-		function setStartEndTimes() {
+		function setEndTime() {
+			player.pauseVideo();
+			player.seekTo(parseInt(document.getElementById('time-max').value - 1)); 
+			currentSettings['start'] = parseInt(document.getElementById('time-min').value);
+			currentSettings['ss'] = parseInt(document.getElementById('time-min').value);
+			currentSettings['end'] = parseInt(document.getElementById('time-max').value);
+			player.playVideo()
+		}
+
+		function setStartTime() {
+			player.pauseVideo();
 			player.seekTo(parseInt(document.getElementById('time-min').value)); 
 			currentSettings['start'] = parseInt(document.getElementById('time-min').value);
 			currentSettings['ss'] = parseInt(document.getElementById('time-min').value);
@@ -48,7 +62,7 @@
 
 		$( "#slider" ).on( "slidestart", function( event, ui ) {player.pauseVideo()} );
 		$( "#slider" ).on( "slidestop", function( event, ui ) {
-			setStartEndTimes();
+			setStartEndTimes((event.innerHTML.includes('time-min')));
 		});
 
 		var player;
@@ -75,16 +89,17 @@
 				height: 472,
 				playerVars: {
 					autoplay: 1,
-					controls: 1,
-					showinfo: 1,
-					allowFullScreen: 1,
+					// controls: 2,
+					// showinfo: 0,
+					// allowFullScreen: 1,
 					iv_load_policy: 3,
 					allowFullScreen: 0,
-					autohide: 1
+					autohide: 0
 				},
 				events: {
 					onReady: function(e) {
 						setInterval(() => {
+							// player.showVideoInfo();
 							if (Math.floor(player.getCurrentTime()) >= currentSettings['end']) {
 								player.seekTo(currentSettings['start'], true);
 							}
