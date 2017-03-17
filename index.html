@@ -29,15 +29,15 @@
 			var player_positions = document.querySelector('#player-div').getBoundingClientRect();
 			var shape = document.createElement('DIV');
 			shape.setAttribute('id', 'cover-shape');
-			shape.setAttribute('style', 'position:absolute;background:grey;z-index:99;width:' + currentSettings['w'] + 'px;height:' + currentSettings['h'] + 'px;left:' + currentSettings['x'] + 'px;top:' + currentSettings['y'] + 'px;');
+			shape.setAttribute('style', 'position:absolute;background:grey;z-index:99;width:' + currentSettings['w'] + 'px;height:' + currentSettings['h'] + 'px;left:' + (currentSettings['x'] + $('#player-div').offset()['left']) + 'px;top:' + (currentSettings['y'] +$('#player-div').offset()['top']) + 'px;');
 			document.body.appendChild(shape);
 			$( "#cover-shape" ).on( "resizestop", function( event, ui ) {
 				currentSettings['w'] = $(this).width();
 				currentSettings['h'] = $(this).height();
 			});
 			$( "#cover-shape" ).on( "dragstop", function( event, ui ) {
-				currentSettings['x'] = $(this).offset()['left'];
-				currentSettings['y'] = $(this).offset()['top'];
+				currentSettings['x'] = $(this).offset()['left'] - $('#player-div').offset()['left'];
+				currentSettings['y'] = $(this).offset()['top'] - $('#player-div').offset()['top'];
 			});
 			$('#cover-shape').resizable().draggable();
 		}
@@ -152,6 +152,18 @@
 			currentSettings['start'] = parseInt(document.getElementById('time-min').value);
 			currentSettings['end'] = parseInt(document.getElementById('time-max').value);
 		}
+
+
+		let resizeTimeout;
+		$(window).resize(() => {
+    		clearTimeout(resizeTimeout);
+    		resizeTimeout = setTimeout(() => {
+				document.getElementById('cover-shape').setAttribute('style', 'position:absolute;background:grey;z-index:99;width:' + currentSettings['w'] + 'px;height:' + currentSettings['h'] + 'px;left:' + (currentSettings['x'] + $('#player-div').offset()['left']) + 'px;top:' + (currentSettings['y'] +$('#player-div').offset()['top']) + 'px;');
+    		}, 500);
+		});
+		// function changePosOnResize() {
+		// 	document.getElementById('cover-shape').setAttribute('style', 'position:absolute;background:grey;z-index:99;width:' + currentSettings['w'] + 'px;height:' + currentSettings['h'] + 'px;left:' + (currentSettings['x'] + $('#player-div').offset()['left']) + 'px;top:' + (currentSettings['y'] +$('#player-div').offset()['top']) + 'px;');
+		// }
 	</script>
 </body>
 </html>
